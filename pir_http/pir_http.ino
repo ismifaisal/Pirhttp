@@ -10,9 +10,10 @@ int gerakan2 = 0;
 
 // Local Network Settings
 byte mac[]     = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // Must be unique on local network
-byte ip[]      = { 192, 168, 43, 151 };      // Must be unique on local network
-byte gateway[] = { 192, 168, 43, 1 };        // 192.168.100.102    
-byte subnet[]  = { 255, 255, 255, 0 };
+//byte ip[]      = { 192, 168, 43, 151 };      // Must be unique on local network
+//byte gateway[] = { 192, 168, 43, 1 };        // 192.168.100.102    
+//byte subnet[]  = { 255, 255, 255, 0 };
+IPAddress ip(192,168,200,1);
 
 // ThingSpeak Settings
 char server[] = "192.168.43.151"; //"api.thingspeak.com";
@@ -34,7 +35,8 @@ void setup()
   pinMode(pirPin2,INPUT);
   pinMode(LED1,OUTPUT);
   
-  Ethernet.begin(mac, ip, gateway, subnet);
+//  Ethernet.begin(mac, ip, gateway, subnet);
+Ethernet.begin(mac, ip);
   delay(1000);
   Serial.print("ETHERNET SHIELD ip  is     : ");
   Serial.println(Ethernet.localIP()); 
@@ -83,7 +85,7 @@ void updateThingSpeak(String tsData)
   if (client.connect(server, 80)) // +tsData
   { 
     client.print("POST /ruang.php HTTP/1.1\n");
-    client.print("Host: 192.168.43.151");
+    client.print("Host: 192,168,43,151");
     client.print("Connection: close\n");
     client.print("Content-Type: application/x-www-form-urlencoded\n");
     client.print("Content-Length: ");

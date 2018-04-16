@@ -17,7 +17,7 @@ IPAddress ip(192,168,200,1);
 
 // ThingSpeak Settings
 char server[] = "192.168.43.151"; //"api.thingspeak.com";
-String writeAPIKey = "B5O4FTOQLXJBMPTS";    // Write API Key for a ThingSpeak Channel
+//String writeAPIKey = "B5O4FTOQLXJBMPTS";    // Write API Key for a ThingSpeak Channel
 const int updateInterval = 1000;        // Time interval in milliseconds to update ThingSpeak   
 
 // Variable Setup
@@ -36,7 +36,7 @@ void setup()
   pinMode(LED1,OUTPUT);
   
 //  Ethernet.begin(mac, ip, gateway, subnet);
-Ethernet.begin(mac, ip);
+  Ethernet.begin(mac, ip);
   delay(1000);
   Serial.print("ETHERNET SHIELD ip  is     : ");
   Serial.println(Ethernet.localIP()); 
@@ -73,18 +73,19 @@ void loop()
   // Update ThingSpeak
   if(!client.connected() && (millis() - lastConnectionTime > updateInterval))
   { 
-      String data = "satu="+(String(pirPin))+"&dua="+(String(pirPin2));
-      updateThingSpeak(data);
+//      String data = "satu="+(String(pirPin))+"&dua="+(String(pirPin2));
+      String data = "satu="+(String("0"))+"&dua="+(String("0"));
+      updateLocalHost(data);
     //+("&tiga="+pirPin3)+("&empat="+pirPin4)+("&lima="+pirPin5)+("&enam="+pirPin6)+("&tujuh="+pirPin7)+("&delapan="+pirPin8)+("&sembilan="+pirPin9)+("&sepuluh="+pirPin10)+("&sebelas="+pirPin11)+("&duabelas="+pirPin12)+("&tigabelas="+pirPin13)+("&empatbelas="+pirPin14)+("&limabelas="+pirPin15)+("&enambelas="+pirPin16)+("&tujuhbelas="+pirPin17)+("&delapanbelas="+pirPin18)+("&sembilanbelas="+pirPin19)+("&duapuluh="+pirPin20)+("&duasatu="+pirPin21));
   }
   lastConnected = client.connected();
 }
 
-void updateThingSpeak(String tsData)
+void updateLocalHost(String tsData)
 {
-  if (client.connect(server, 80)) // +tsData
+  if (client.connect("192.168.43.151", 80)) // +tsData
   { 
-    client.print("POST /ruang.php HTTP/1.1\n");
+    client.print("POST /ruang.php HTTP/1.1");
     client.print("Host: 192,168,43,151");
     client.print("Connection: close\n");
     client.print("Content-Type: application/x-www-form-urlencoded\n");
@@ -98,7 +99,7 @@ void updateThingSpeak(String tsData)
     
     if (client.connected())
     {
-      Serial.println("Connecting to ThingSpeak...");
+      Serial.println("Connecting to LocalHost...");
       Serial.println();
       
       failedCounter = 0;
@@ -107,7 +108,7 @@ void updateThingSpeak(String tsData)
     {
       failedCounter++;
   
-      Serial.println("Connection to ThingSpeak failed ("+String(failedCounter, DEC)+")");   
+      Serial.println("Connection to LocalHost failed ("+String(failedCounter, DEC)+")");   
       Serial.println();
     }
     
@@ -116,7 +117,7 @@ void updateThingSpeak(String tsData)
   {
     failedCounter++;
     
-    Serial.println("Connection to ThingSpeak Failed ("+String(failedCounter, DEC)+")");   
+    Serial.println("Connection to LocalHost Failed ("+String(failedCounter, DEC)+")");   
     Serial.println();
     
     lastConnectionTime = millis(); 
@@ -136,13 +137,14 @@ void startEthernet()
   // Connect to network amd obtain an IP address using DHCP
   if (Ethernet.begin(mac) == 0)
   {
+    Ethernet.begin(mac,ip);
     Serial.println("DHCP Failed, reset Arduino to try again");
     Serial.println();
   }
   else {
     Serial.println("Arduino connected to network using DHCP");
     Serial.println();
-    Serial.println("Data being uploaded to THINGSPEAK Server.......");
+    Serial.println("Data being uploaded to LOCALHOST Server.......");
     Serial.println();
   }
   

@@ -7,11 +7,6 @@ int pirPin2 = 6;
 int row = 0;
 int gerakan = 0;
 int gerakan2 = 0;
-/*int pin = 0; // analog pin
- // temperature variables
-int samples[8]; // variables to make a better precision
-int maxi = -100,mini = 100; // to start max/min temperature
-int i;*/
 
 // Local Network Settings
 byte mac[]     = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // Must be unique on local network
@@ -19,10 +14,9 @@ byte ip[]      = { 192, 168, 100, 102 };      // Must be unique on local network
 byte gateway[] = { 192, 168, 100, 114 };        // 192.168.100.102    
 byte subnet[]  = { 255, 255, 255, 0 };
 
-// ThingSpeak Settings
-char server[] = "192.168.100.114/ruang.php"; //"api.thingspeak.com";
-String writeAPIKey = "B5O4FTOQLXJBMPTS";    // Write API Key for a ThingSpeak Channel
-const int updateInterval = 1000;        // Time interval in milliseconds to update ThingSpeak   
+// Server Settings
+char server[] = "pramudyo.com"; 
+const int updateInterval = 1000;            // Time interval in milliseconds to update ThingSpeak   
 
 // Variable Setup
 long lastConnectionTime = 0; 
@@ -61,7 +55,7 @@ void loop()
     char c = client.read();
     Serial.print(c);
   }
-  // Disconnect from ThingSpeak
+  // Disconnect from Server
   if (!client.connected() && lastConnected)
   {
     Serial.println();
@@ -69,22 +63,22 @@ void loop()
     Serial.println();
     client.stop();
   }
-  // Update ThingSpeak
+  // Update Server
   if(!client.connected() && (millis() - lastConnectionTime > updateInterval))
   {
-    updateThingSpeak(("&satu="+pirPin)+("&dua="+pirPin2)); //+("&tiga="+pirPin3)+("&empat="+pirPin4)+("&lima="+pirPin5)+("&enam="+pirPin6)+("&tujuh="+pirPin7)+("&delapan="+pirPin8)+("&sembilan="+pirPin9)+("&sepuluh="+pirPin10)+("&sebelas="+pirPin11)+("&duabelas="+pirPin12)+("&tigabelas="+pirPin13)+("&empatbelas="+pirPin14)+("&limabelas="+pirPin15)+("&enambelas="+pirPin16)+("&tujuhbelas="+pirPin17)+("&delapanbelas="+pirPin18)+("&sembilanbelas="+pirPin19)+("&duapuluh="+pirPin20)+("&duasatu="+pirPin21));
+    updateServer(("&satu="+pirPin)+("&dua="+pirPin2)); 
+    //+("&tiga="+pirPin3)+("&empat="+pirPin4)+("&lima="+pirPin5)+("&enam="+pirPin6)+("&tujuh="+pirPin7)+("&delapan="+pirPin8)+("&sembilan="+pirPin9)+("&sepuluh="+pirPin10)+("&sebelas="+pirPin11)+("&duabelas="+pirPin12)+("&tigabelas="+pirPin13)+("&empatbelas="+pirPin14)+("&limabelas="+pirPin15)+("&enambelas="+pirPin16)+("&tujuhbelas="+pirPin17)+("&delapanbelas="+pirPin18)+("&sembilanbelas="+pirPin19)+("&duapuluh="+pirPin20)+("&duasatu="+pirPin21));
   }
   lastConnected = client.connected();
 }
 
-void updateThingSpeak(String tsData)
+void updateServer(String tsData)
 {
   if (client.connect(server, 80)) // +tsData
   { 
-    client.print("POST /update HTTP/1.1\n");
-    client.print("Host: api.thingspeak.com\n");
+    client.print("POST /monitor.php HTTP/1.1\n");
+    client.print("Host: pramudyo.com\n");
     client.print("Connection: close\n");
-    client.print("X-THINGSPEAKAPIKEY: "+writeAPIKey+"\n");
     client.print("Content-Type: application/x-www-form-urlencoded\n");
     client.print("Content-Length: ");
     client.print(tsData.length());
@@ -96,7 +90,7 @@ void updateThingSpeak(String tsData)
     
     if (client.connected())
     {
-      Serial.println("Connecting to ThingSpeak...");
+      Serial.println("Connecting to Server...");
       Serial.println();
       
       failedCounter = 0;
@@ -105,7 +99,7 @@ void updateThingSpeak(String tsData)
     {
       failedCounter++;
   
-      Serial.println("Connection to ThingSpeak failed ("+String(failedCounter, DEC)+")");   
+      Serial.println("Connection to Server failed ("+String(failedCounter, DEC)+")");   
       Serial.println();
     }
     
@@ -114,7 +108,7 @@ void updateThingSpeak(String tsData)
   {
     failedCounter++;
     
-    Serial.println("Connection to ThingSpeak Failed ("+String(failedCounter, DEC)+")");   
+    Serial.println("Connection to Server Failed ("+String(failedCounter, DEC)+")");   
     Serial.println();
     
     lastConnectionTime = millis(); 
@@ -140,7 +134,7 @@ void startEthernet()
   else {
     Serial.println("Arduino connected to network using DHCP");
     Serial.println();
-    Serial.println("Data being uploaded to THINGSPEAK Server.......");
+    Serial.println("Data being uploaded to Server.......");
     Serial.println();
   }
   

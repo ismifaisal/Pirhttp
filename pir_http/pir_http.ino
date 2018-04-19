@@ -10,13 +10,13 @@ int gerakan2 = 0;
 
 // Local Network Settings
 byte mac[]     = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // Must be unique on local network
-//byte ip[]      = { 192, 168, 43, 151 };      // Must be unique on local network
-//byte gateway[] = { 192, 168, 43, 1 };        // 192.168.100.102    
-//byte subnet[]  = { 255, 255, 255, 0 };
-IPAddress ip(192,168,200,1);
+byte ip[]      = { 192, 168, 100, 102 };      // Must be unique on local network
+byte gateway[] = { 192, 168, 100, 1 };        // 192.168.100.102    
+byte subnet[]  = { 255, 255, 255, 0 };
+//IPAddress ip(192,168,100,102);
 
 // ThingSpeak Settings
-char server[] = "192.168.43.151"; //"api.thingspeak.com";
+char server[] = "127.0.0.1/ruang.php"; //"api.thingspeak.com";
 //String writeAPIKey = "B5O4FTOQLXJBMPTS";    // Write API Key for a ThingSpeak Channel
 const int updateInterval = 1000;        // Time interval in milliseconds to update ThingSpeak   
 
@@ -83,10 +83,10 @@ void loop()
 
 void updateLocalHost(String tsData)
 {
-  if (client.connect("192.168.43.151", 80)) // +tsData
+  if (client.connect(server, 80)) // +tsData
   { 
     client.print("POST /ruang.php HTTP/1.1");
-    client.print("Host: 192,168,43,151");
+    client.print("Host: 127,0,0,1");
     client.print("Connection: close\n");
     client.print("Content-Type: application/x-www-form-urlencoded\n");
     client.print("Content-Length: ");

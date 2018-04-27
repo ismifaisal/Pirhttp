@@ -140,4 +140,3 @@ void startEthernet()
   
   delay(1000);
 }
-
